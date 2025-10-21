@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .hover-buttons { opacity: 0; transition: opacity 0.2s; }
+        .group:hover .hover-buttons { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Simple inline icons
+        const ChevronRight = () => <span className="text-gray-400">›</span>;
+        const CheckIcon = () => <span className="text-green-600">✓</span>;
+
+        // ===== STUDENT LEADERSHIP DASHBOARD =====
+        const StudentLeadershipDashboard = ({ onBack }) => {
+            const [mission, setMission] = useState("Finalizing Visibility and Project Submissions");
+            const [heartCheck, setHeartCheck] = useState("Working together: RA Creed Discussion");
+            
+            const committees = [
+                { function: "MAINTENANCE", female: "AGAPTUS", male: "PETER" },
+                { function: "SECURITY", female: "MESHACH", male: "MAYOR JUDE" },
+                { function: "WELFARE/SPECIAL DUTIES", female: "TEJIRI", male: "FRANCIS" },
+                { function: "DRESSCODE", female: "NIFEMI", male: "COURAGE" },
+            ];
+
+            const [p1Tasks, setP1Tasks] = useState([
+                { id: 1, text: "Finalize list of high-visibility rules", done: false },
+                { id: 2, text: "Create forwardable text for hostel groups", done: false },
+                { id: 3, text: "Define template for submissions", done: false },
+            ]);
+
+            const toggleTask = (id) => {
+                setP1Tasks(p1Tasks.map(t => t.id === id ? {...t, done: !t.done} : t));
+            };
+
+            const p1Progress = Math.round((p1Tasks.filter(t => t.done).length / p1Tasks.length) * 100);
+
+            return (
+                <div className="min-h-screen bg-gray-50 p-6">
+                    <div className="max-w-7xl mx-auto">
+                        <button onClick={onBack} className="mb-6 text-blue-600 hover:text-blue-800">
+                            ← Back to Hub
+                        </button>
+
+                        <div className="bg-white rounded-lg shadow-md p-8 mb-6">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-6">🧭 Student Leadership Dashboard</h1>
+                            
+                            <div className="grid md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Weekly Mission</label>
+                                    <textarea
+                                        value={mission}
+                                        onChange={(e) => setMission(e.target.value)}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        rows="2"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Heart Check</label>
+                                    <textarea
+                                        value={heartCheck}
+                                        onChange={(e) => setHeartCheck(e.target.value)}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        rows="2"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mb-6">
+                                <h2 className="text-xl font-bold mb-4">👥 Committee Directory</h2>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b-2 border-gray-200">
+                                                <th className="text-left py-3 px-4">Committee</th>
+                                                <th className="text-left py-3 px-4">Female Head</th>
+                                                <th className="text-left py-3 px-4">Male Head</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {committees.map((c, i) => (
+                                                <tr key={i} className="border-b hover:bg-gray-50">
+                                                    <td className="py-3 px-4 font-medium">{c.function}</td>
+                                                    <td className="py-3 px-4">{c.female}</td>
+                                                    <td className="py-3 px-4">{c.male}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div className="flex justify-between mb-3">
+                                    <h3 className="text-lg font-semibold">Priority Tasks</h3>
+                                    <span className="text-sm font-medium text-gray-600">{p1Progress}%</span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                    <div className="bg-red-500 h-2 rounded-full" style={{width: `${p1Progress}%`}}></div>
+                                </div>
+                                <div className="space-y-2">
+                                    {p1Tasks.map(task => (
+                                        <label key={task.id} className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={task.done}
+                                                onChange={() => toggleTask(task.id)}
+                                                className="w-4 h-4"
+                                            />
+                                            <span className={task.done ? 'line-through text-gray-500' : ''}>{task.text}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                            <button className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
+                                Save This Week
+                            </button>
+                            <button className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700">
+                                Duplicate for Next Week
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ===== NUAMBS DASHBOARD =====
+        const NUAMBSDashboard = ({ onBack }) => {
+            const [mission, setMission] = useState("Finalizing all core administrative documents");
+            const [wins, setWins] = useState([
+                { id: 1, text: "3-Month Editorial Calendar", done: true },
+                { id: 2, text: "Annual Budget finalized", done: true },
+                { id: 3, text: "Events Documentation", done: false },
+            ]);
+
+            const toggleWin = (id) => {
+                setWins(wins.map(w => w.id === id ? {...w, done: !w.done} : w));
+            };
+
+            const progress = Math.round((wins.filter(w => w.done).length / wins.length) * 100);
+
+            return (
+                <div className="min-h-screen bg-gray-50 p-6">
+                    <div className="max-w-7xl mx-auto">
+                        <button onClick={onBack} className="mb-6 text-blue-600 hover:text-blue-800">
+                            ← Back to Hub
+                        </button>
+
+                        <div className="bg-white rounded-lg shadow-md p-8">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-6">🎯 NUAMBS Executive Dashboard</h1>
+                            
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Bi-Weekly Mission</label>
+                                <textarea
+                                    value={mission}
+                                    onChange={(e) => setMission(e.target.value)}
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                    rows="2"
+                                />
+                            </div>
+
+                            <div>
+                                <div className="flex justify-between mb-3">
+                                    <h3 className="text-lg font-semibold">Targeted Wins</h3>
+                                    <span className="text-sm font-medium">{progress}%</span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                    <div className="bg-purple-500 h-2 rounded-full" style={{width: `${progress}%`}}></div>
+                                </div>
+                                <div className="space-y-2">
+                                    {wins.map(win => (
+                                        <label key={win.id} className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={win.done}
+                                                onChange={() => toggleWin(win.id)}
+                                                className="w-4 h-4"
+                                            />
+                                            <span className={win.done ? 'line-through text-gray-500' : ''}>{win.text}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ===== ACADEMIC DASHBOARD =====
+        const AcademicDashboard = ({ onBack }) => {
+            const [courses] = useState([
+                { code: "BUS 411", name: "Business Policy II", units: 3, status: "Pending" },
+                { code: "BUS 412", name: "Management Theory", units: 3, status: "In Progress" },
+                { code: "BUS 414", name: "Quantitative Analysis", units: 3, status: "Need Input" },
+            ]);
+
+            return (
+                <div className="min-h-screen bg-gray-50 p-6">
+                    <div className="max-w-7xl mx-auto">
+                        <button onClick={onBack} className="mb-6 text-blue-600 hover:text-blue-800">
+                            ← Back to Hub
+                        </button>
+
+                        <div className="bg-white rounded-lg shadow-md p-8">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-6">📚 Academic Coursework</h1>
+                            
+                            <div className="grid md:grid-cols-3 gap-6 mb-6">
+                                <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
+                                    <div className="text-3xl font-bold text-blue-700">{courses.length}</div>
+                                    <div className="text-sm text-gray-600">Total Courses</div>
+                                </div>
+                                <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-500">
+                                    <div className="text-3xl font-bold text-green-700">
+                                        {courses.reduce((sum, c) => sum + c.units, 0)}
+                                    </div>
+                                    <div className="text-sm text-gray-600">Total Units</div>
+                                </div>
+                                <div className="bg-red-50 rounded-lg p-6 border-l-4 border-red-500">
+                                    <div className="text-3xl font-bold text-red-700">2</div>
+                                    <div className="text-sm text-gray-600">Due This Week</div>
+                                </div>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b-2 border-gray-200">
+                                            <th className="text-left py-3 px-4">Code</th>
+                                            <th className="text-left py-3 px-4">Course Name</th>
+                                            <th className="text-left py-3 px-4">Units</th>
+                                            <th className="text-left py-3 px-4">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {courses.map((c, i) => (
+                                            <tr key={i} className="border-b hover:bg-gray-50">
+                                                <td className="py-3 px-4 font-medium">{c.code}</td>
+                                                <td className="py-3 px-4">{c.name}</td>
+                                                <td className="py-3 px-4">{c.units}</td>
+                                                <td className="py-3 px-4">
+                                                    <span className={`px-2 py-1 rounded-full text-xs ${
+                                                        c.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                                                        c.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                        'bg-red-100 text-red-800'
+                                                    }`}>
+                                                        {c.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ===== THESIS TRACKER =====
+        const ThesisDashboard = ({ onBack }) => {
+            const [chapters] = useState([
+                { num: 1, title: "Introduction", status: "Editing", time: "3 Days" },
+                { num: 2, title: "Literature Review", status: "To Do", time: "10 Days" },
+                { num: 3, title: "Methodology", status: "High Priority", time: "7 Days" },
+            ]);
+
+            return (
+                <div className="min-h-screen bg-gray-50 p-6">
+                    <div className="max-w-7xl mx-auto">
+                        <button onClick={onBack} className="mb-6 text-blue-600 hover:text-blue-800">
+                            ← Back to Hub
+                        </button>
+
+                        <div className="bg-white rounded-lg shadow-md p-8">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-6">🎓 Thesis Tracker</h1>
+                            
+                            <div className="space-y-4">
+                                {chapters.map(ch => (
+                                    <div key={ch.num} className="p-4 bg-gray-50 rounded-lg border-l-4 border-green-500">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="font-semibold text-lg">Chapter {ch.num}: {ch.title}</h3>
+                                                <p className="text-sm text-gray-600 mt-1">Estimated: {ch.time}</p>
+                                            </div>
+                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                ch.status === 'Editing' ? 'bg-blue-100 text-blue-800' :
+                                                ch.status === 'High Priority' ? 'bg-red-100 text-red-800' :
+                                                'bg-gray-100 text-gray-800'
+                                            }`}>
+                                                {ch.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ===== LSC TRACKER =====
+        const LSCDashboard = ({ onBack }) => {
+            const [sessions, setSessions] = useState([
+                { id: 1, date: "October 25, 2025", topic: "Introduction to LSC", attended: false },
+                { id: 2, date: "November 15, 2025", topic: "Online Economy", attended: false },
+                { id: 3, date: "November 22, 2025", topic: "Communication Skills", attended: false },
+            ]);
+
+            const toggleAttendance = (id) => {
+                setSessions(sessions.map(s => s.id === id ? {...s, attended: !s.attended} : s));
+            };
+
+            const rate = Math.round((sessions.filter(s => s.attended).length / sessions.length) * 100);
+
+            return (
+                <div className="min-h-screen bg-gray-50 p-6">
+                    <div className="max-w-7xl mx-auto">
+                        <button onClick={onBack} className="mb-6 text-blue-600 hover:text-blue-800">
+                            ← Back to Hub
+                        </button>
+
+                        <div className="bg-white rounded-lg shadow-md p-8">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-6">📅 LSC Tracker</h1>
+                            
+                            <div className="grid md:grid-cols-3 gap-6 mb-6">
+                                <div className="bg-yellow-50 rounded-lg p-6 border-l-4 border-yellow-500">
+                                    <div className="text-3xl font-bold text-yellow-700">{sessions.length}</div>
+                                    <div className="text-sm text-gray-600">Total Sessions</div>
+                                </div>
+                                <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-500">
+                                    <div className="text-3xl font-bold text-green-700">
+                                        {sessions.filter(s => s.attended).length}
+                                    </div>
+                                    <div className="text-sm text-gray-600">Attended</div>
+                                </div>
+                                <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
+                                    <div className="text-3xl font-bold text-blue-700">{rate}%</div>
+                                    <div className="text-sm text-gray-600">Attendance Rate</div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                {sessions.map(session => (
+                                    <div key={session.id} className={`p-4 rounded-lg border-l-4 ${
+                                        session.attended ? 'bg-green-50 border-green-500' : 'bg-blue-50 border-blue-500'
+                                    }`}>
+                                        <label className="flex items-center gap-3 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={session.attended}
+                                                onChange={() => toggleAttendance(session.id)}
+                                                className="w-5 h-5"
+                                            />
+                                            <div className="flex-1">
+                                                <div className={`font-semibold ${session.attended ? 'line-through text-gray-500' : ''}`}>
+                                                    {session.date}
+                                                </div>
+                                                <div className="text-sm text-gray-700">{session.topic}</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ===== WEEKLY RESET =====
+        const WeeklyResetDashboard = ({ onBack }) => {
+            const [spiritual, setSpiritual] = useState([
+                { id: 1, text: "Reflect on prayer consistency", done: false },
+                { id: 2, text: "Journal key lessons", done: false },
+                { id: 3, text: "Plan next week's prayer schedule", done: false },
+            ]);
+
+            const toggle = (id) => {
+                setSpiritual(spiritual.map(s => s.id === id ? {...s, done: !s.done} : s));
+            };
+
+            const progress = Math.round((spiritual.filter(s => s.done).length / spiritual.length) * 100);
+
+            return (
+                <div className="min-h-screen bg-gray-50 p-6">
+                    <div className="max-w-7xl mx-auto">
+                        <button onClick={onBack} className="mb-6 text-blue-600 hover:text-blue-800">
+                            ← Back to Hub
+                        </button>
+
+                        <div className="bg-white rounded-lg shadow-md p-8">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-6">🔄 Weekly Reset</h1>
+                            
+                            <div className="bg-indigo-50 rounded-lg p-6 mb-6 border-l-4 border-indigo-500">
+                                <div className="flex justify-between mb-3">
+                                    <h2 className="text-xl font-bold">Overall Progress</h2>
+                                    <span className="text-2xl font-bold text-indigo-700">{progress}%</span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-3">
+                                    <div className="bg-indigo-600 h-3 rounded-full" style={{width: `${progress}%`}}></div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-lg p-6 border-l-4 border-purple-500">
+                                <h3 className="text-lg font-semibold mb-4">🌅 Spiritual Reset</h3>
+                                <div className="space-y-2">
+                                    {spiritual.map(item => (
+                                        <label key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={item.done}
+                                                onChange={() => toggle(item.id)}
+                                                className="w-4 h-4"
+                                            />
+                                            <span className={item.done ? 'line-through text-gray-500' : ''}>{item.text}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ===== MAIN APP =====
+        const App = () => {
+            const [view, setView] = useState('hub');
+
+            if (view === 'leadership') return <StudentLeadershipDashboard onBack={() => setView('hub')} />;
+            if (view === 'nuambs') return <NUAMBSDashboard onBack={() => setView('hub')} />;
+            if (view === 'academic') return <AcademicDashboard onBack={() => setView('hub')} />;
+            if (view === 'thesis') return <ThesisDashboard onBack={() => setView('hub')} />;
+            if (view === 'lsc') return <LSCDashboard onBack={() => setView('hub')} />;
+            if (view === 'reset') return <WeeklyResetDashboard onBack={() => setView('hub')} />;
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                    <div className="max-w-6xl mx-auto">
+                        <header className="text-center mb-12">
+                            <h1 className="text-4xl font-bold text-gray-900 mb-2">Life Management System</h1>
+                            <p className="text-gray-600">Complete dashboard for academic, leadership, and personal excellence</p>
+                        </header>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <DashboardCard
+                                title="Student Leadership"
+                                description="Weekly mission, committees, meetings, tasks"
+                                status="5 upcoming events"
+                                color="border-red-500"
+                                onClick={() => setView('leadership')}
+                            />
+                            <DashboardCard
+                                title="NUAMBS Executive"
+                                description="Bi-weekly committee actions and events"
+                                status="Next meeting: TBD"
+                                color="border-purple-500"
+                                onClick={() => setView('nuambs')}
+                            />
+                            <DashboardCard
+                                title="Academic Coursework"
+                                description="Course progress and assessments"
+                                status="2 items due Oct 21"
+                                color="border-blue-500"
+                                onClick={() => setView('academic')}
+                            />
+                            <DashboardCard
+                                title="Final Year Project"
+                                description="Thesis tracker and chapter roadmap"
+                                status="Chapter 1: Editing"
+                                color="border-green-500"
+                                onClick={() => setView('thesis')}
+                            />
+                            <DashboardCard
+                                title="LSC Tracker"
+                                description="Training schedule and group work"
+                                status="Next session: Oct 25"
+                                color="border-yellow-500"
+                                onClick={() => setView('lsc')}
+                            />
+                            <DashboardCard
+                                title="Weekly Reset"
+                                description="Spiritual and practical realignment"
+                                status="Sunday routine"
+                                color="border-indigo-500"
+                                onClick={() => setView('reset')}
+                            />
+                        </div>
+
+                        <div className="mt-12 bg-white rounded-lg shadow-md p-6">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Stats</h2>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-blue-600">8</div>
+                                    <div className="text-sm text-gray-600">Active Courses</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-red-600">2</div>
+                                    <div className="text-sm text-gray-600">Due Oct 21</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-green-600">10</div>
+                                    <div className="text-sm text-gray-600">LSC Sessions</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-purple-600">7</div>
+                                    <div className="text-sm text-gray-600">NUAMBS Events</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const DashboardCard = ({ title, description, status, color, onClick }) => (
+            <div 
+                onClick={onClick}
+                className={`bg-white rounded-lg shadow-md p-6 cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 border-l-4 ${color}`}
+            >
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+                <p className="text-sm text-gray-600 mb-3">{description}</p>
+                {status && (
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <CheckIcon />
+                        <span>{status}</span>
+                    </div>
+                )}
+            </div>
+        );
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
